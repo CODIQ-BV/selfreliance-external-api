@@ -384,8 +384,8 @@ components:
         - bankAccountNumber
         - mandateTimestamp
   securitySchemes:
-    API Key - 1:
-      name: Bearer
+    API Key:
+      name: X-Api-Key
       type: apiKey
       in: header
 tags:
