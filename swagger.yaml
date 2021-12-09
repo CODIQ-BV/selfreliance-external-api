@@ -2,13 +2,20 @@ openapi: 3.0.0
 info:
   title: awesems
   version: '1.0'
+  description: ''
 servers:
   - url: 'https://stoplight.io/mocks/codiq/awesems/22186902'
+    description: Mock
+  - url: 'https://api.awesems-energy.nl/v1/awesems'
+    description: Production
+  - url: 'https://staging-api.awesems-energy.nl/v1/awesems'
+    description: Staging
 paths:
   '/customer/{externalID}/usage':
     get:
       summary: Get usage for period
-      tags: []
+      tags:
+        - usage
       responses:
         '200':
           description: OK
@@ -93,7 +100,8 @@ paths:
   '/customer/{externalID}':
     get:
       summary: Get customer / check existence
-      tags: []
+      tags:
+        - customer
       responses:
         '200':
           description: OK
@@ -146,6 +154,8 @@ paths:
               properties:
                 hasSplitBilling:
                   type: boolean
+      tags:
+        - customer
   '/customer/{externalID}/advancepayment':
     parameters:
       - schema:
@@ -204,7 +214,8 @@ paths:
   '/customer/{externalID/invoices':
     get:
       summary: Get invoices
-      tags: []
+      tags:
+        - invoices
       responses:
         '200':
           description: OK
@@ -237,6 +248,8 @@ paths:
                         - INVOICED
                         - CREDITED
                         - PAID
+                    type:
+                      type: string
       operationId: get-customer-externalID-invoices
 components:
   schemas:
@@ -370,3 +383,15 @@ components:
         - bankAccountType
         - bankAccountNumber
         - mandateTimestamp
+  securitySchemes:
+    API Key - 1:
+      name: Bearer
+      type: apiKey
+      in: header
+tags:
+  - name: advancepayment
+  - name: customer
+  - name: invoices
+  - name: usage
+security:
+  - API Key - 1: []
