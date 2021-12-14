@@ -46,6 +46,8 @@ paths:
                           type: integer
                         returnSingle:
                           type: integer
+                        gasUsage:
+                          type: integer
                     chargingPointUsage:
                       type: object
                       properties:
@@ -251,6 +253,42 @@ paths:
                     type:
                       type: string
       operationId: get-customer-externalID-invoices
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: dateFrom
+        - schema:
+            type: string
+          in: query
+          name: dateTill
+        - schema:
+            type: string
+          in: query
+          name: type
+      description: 'To be finished, expected 15 dec'
+  /smartcharginghours:
+    get:
+      summary: Get smart charging hours
+      tags:
+        - smartcharging
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    hourFrom:
+                      type: integer
+                    hourTo:
+                      type: integer
+                    price:
+                      type: number
+      operationId: get-smartcharginghours
 components:
   schemas:
     Relation:
