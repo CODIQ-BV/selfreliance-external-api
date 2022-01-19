@@ -213,7 +213,7 @@ paths:
                   type: number
       tags:
         - advancepayment
-  '/customer/{externalID/invoices':
+  '/customer/{externalID}/invoices':
     get:
       summary: Get invoices
       tags:
@@ -240,18 +240,34 @@ paths:
                     invoiceDate:
                       type: string
                       format: date
-                    pdfURL:
-                      type: string
-                      format: uri
-                      description: 'Signed S3 url, valid for 12 hours'
                     status:
                       type: string
-                      enum:
-                        - INVOICED
-                        - CREDITED
-                        - PAID
+                      description: We cannot provide a payment status yet
                     type:
                       type: string
+                    fileURL:
+                      type: string
+                    typeLocalized:
+                      type: string
+              examples:
+                example-1:
+                  value:
+                    - id: 1
+                      subAmount: 0
+                      vatAmount: 0
+                      totalAmount: 0
+                      invoiceDate: '2019-08-24'
+                      status: string
+                      type: SPLIT_BILLING_INVOICE
+                      lines:
+                        - name: string
+                          amount: 0
+                          quantity: 0
+                          subAmount: 0
+                          vatRate: 0
+                          vatAmount: 0
+                          totalAmount: 0
+                      fileURL: string
       operationId: get-customer-externalID-invoices
       parameters:
         - schema:
@@ -262,11 +278,13 @@ paths:
             type: string
           in: query
           name: dateTill
-        - schema:
-            type: string
-          in: query
-          name: type
-      description: 'To be finished, expected 15 dec'
+      description: ''
+    parameters:
+      - schema:
+          type: string
+        name: externalID
+        in: path
+        required: true
   /smartcharginghours:
     get:
       summary: Get smart charging hours
