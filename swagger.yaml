@@ -249,25 +249,7 @@ paths:
                       type: string
                     typeLocalized:
                       type: string
-              examples:
-                example-1:
-                  value:
-                    - id: 1
-                      subAmount: 0
-                      vatAmount: 0
-                      totalAmount: 0
-                      invoiceDate: '2019-08-24'
-                      status: string
-                      type: SPLIT_BILLING_INVOICE
-                      lines:
-                        - name: string
-                          amount: 0
-                          quantity: 0
-                          subAmount: 0
-                          vatRate: 0
-                          vatAmount: 0
-                          totalAmount: 0
-                      fileURL: string
+              examples: {}
       operationId: get-customer-externalID-invoices
       parameters:
         - schema:
