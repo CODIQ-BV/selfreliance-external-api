@@ -1,435 +1,266 @@
 openapi: 3.0.0
 info:
-  title: awesems
+  title: selfreliance-external-api
   version: '1.0'
-  description: ''
 servers:
-  - url: 'https://stoplight.io/mocks/codiq/awesems/22186902'
-    description: Mock
-  - url: 'https://api.awesems-energy.nl/v1/awesems'
-    description: Production
-  - url: 'https://staging-api.awesems-energy.nl/v1/awesems'
-    description: Staging
+  - url: 'https://api.self-reliance.sr/v1'
 paths:
-  '/customer/{externalID}/usage':
-    get:
-      summary: Get usage for period
-      tags:
-        - usage
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    homeUsage:
-                      type: object
-                      properties:
-                        usageHigh:
-                          type: integer
-                        usageLow:
-                          type: integer
-                        usageSingle:
-                          type: integer
-                        meterType:
-                          type: string
-                          enum:
-                            - SINGLE
-                            - DOUBLE
-                        returnHigh:
-                          type: integer
-                        returnLow:
-                          type: integer
-                        returnSingle:
-                          type: integer
-                        gasUsage:
-                          type: integer
-                    chargingPointUsage:
-                      type: object
-                      properties:
-                        usageHigh:
-                          type: integer
-                        usageLow:
-                          type: integer
-                        usageSingle:
-                          type: integer
-                        meterType:
-                          type: string
-                          enum:
-                            - SINGLE
-                            - DOUBLE
-                        returnHigh:
-                          type: integer
-                        returnLow:
-                          type: integer
-                        returnSingle:
-                          type: integer
-                    period:
-                      type: object
-                      properties:
-                        from:
-                          type: string
-                          example: '2021-01-01 12:00:00'
-                        to:
-                          type: string
-                          example: '2021-01-01 13:00:00'
-        '406':
-          description: Not Acceptable
-          content:
-            application/json:
-              schema:
-                type: object
-      operationId: get-usage
-      parameters:
-        - schema:
-            type: string
-            example: Year OR Year-Month OR Year-Month-Day
-          in: query
-          name: period
-          required: true
-    parameters:
-      - schema:
-          type: string
-          format: uuid
-        name: externalID
-        in: path
-        required: true
-        description: (Awesems ID)
-  '/customer/{externalID}':
-    get:
-      summary: Get customer / check existence
-      tags:
-        - customer
-      responses:
-        '200':
-          description: OK
-          headers: {}
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  relation:
-                    $ref: '#/components/schemas/Relation'
-                  hasActiveContract:
-                    type: boolean
-                    description: True when this relation has an active contract
-                  hasSplitBilling:
-                    type: boolean
-        '404':
-          description: Not Found
-      operationId: get-customer
-    parameters:
-      - schema:
-          type: string
-          format: uuid
-        name: externalID
-        in: path
-        required: true
-        description: (Awesems ID)
-    patch:
-      summary: Edit customer
-      operationId: patch-customer-externalID
-      responses:
-        '200':
-          description: OK
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  denyReason:
-                    type: string
-                    example: Split-billing for this customer is not allowed
-      description: For now only to edit the payment preference (split billing yes or no)
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                hasSplitBilling:
-                  type: boolean
-      tags:
-        - customer
-  '/customer/{externalID}/advancepayment':
-    parameters:
-      - schema:
-          type: string
-        name: externalID
-        in: path
-        required: true
-    get:
-      summary: Get current advance payment
-      tags:
-        - advancepayment
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  amount:
-                    type: number
-      operationId: get-customer-externalID-voorschot
-    patch:
-      summary: Edit advance payment
-      operationId: patch-customer-externalID-advancepayment
-      responses:
-        '202':
-          description: Accepted
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  amount:
-                    type: number
-        '406':
-          description: Not Acceptable
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  denyReason:
-                    type: string
-                    example: Amount too high
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                amount:
-                  type: number
-      tags:
-        - advancepayment
-  '/customer/{externalID}/invoices':
+  /external/invoices:
     get:
       summary: Get invoices
       tags:
         - invoices
+      operationId: get-external-invoices
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                      minimum: 1
-                    subAmount:
-                      type: number
-                    vatAmount:
-                      type: number
-                    totalAmount:
-                      type: number
-                    invoiceDate:
-                      type: string
-                      format: date
-                    status:
-                      type: string
-                      description: We cannot provide a payment status yet
-                    type:
-                      type: string
-                    fileURL:
-                      type: string
-                    typeLocalized:
-                      type: string
-              examples: {}
-      operationId: get-customer-externalID-invoices
-      parameters:
-        - schema:
-            type: string
-          in: query
-          name: dateFrom
-        - schema:
-            type: string
-          in: query
-          name: dateTill
-      description: ''
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    items:
+                      - id: 0
+                        timestamp: string
+                        orderID: 0
+                        prolongationID: 0
+                        amount: string
+                        currency: string
+                        fileID: string
+                        exportID: 0
+                        isExported: 0
+                        file:
+                          id: string
+                          extension: string
+                          fileName: string
+                          relationModel: string
+                          relationID: 0
+                          isPublic: 0
+                          isDeleted: 0
+                          size: 0
+                          timestamp: string
+                        fileURL: string
+                    _links:
+                      self:
+                        href: string
+                      first:
+                        href: string
+                      last:
+                        href: string
+                      next:
+                        href: string
+                    _meta:
+                      totalCount: 0
+                      pageCount: 0
+                      currentPage: 0
+                      perPage: 0
+                properties:
+                  items:
+                    type: array
+                    uniqueItems: true
+                    minItems: 1
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        timestamp:
+                          type: string
+                          minLength: 1
+                        orderID:
+                          type: integer
+                        prolongationID:
+                          type: integer
+                        amount:
+                          type: number
+                        currency:
+                          type: string
+                          minLength: 1
+                        fileID:
+                          type: string
+                          minLength: 1
+                        exportID:
+                          type: integer
+                        isExported:
+                          type: integer
+                        file:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              minLength: 1
+                            extension:
+                              type: string
+                              minLength: 1
+                            fileName:
+                              type: string
+                              minLength: 1
+                            relationModel:
+                              type: string
+                              minLength: 1
+                            relationID:
+                              type: integer
+                            isPublic:
+                              type: integer
+                            isDeleted:
+                              type: integer
+                            size:
+                              type: integer
+                            timestamp:
+                              type: string
+                              minLength: 1
+                          required:
+                            - id
+                            - extension
+                            - fileName
+                            - relationModel
+                            - relationID
+                            - isPublic
+                            - isDeleted
+                            - size
+                            - timestamp
+                        fileURL:
+                          type: string
+                          minLength: 1
+                      required:
+                        - id
+                        - timestamp
+                        - orderID
+                        - prolongationID
+                        - amount
+                        - currency
+                        - fileID
+                        - exportID
+                        - isExported
+                        - fileURL
+                  _links:
+                    type: object
+                    required:
+                      - self
+                      - first
+                      - last
+                      - next
+                    properties:
+                      self:
+                        type: object
+                        required:
+                          - href
+                        properties:
+                          href:
+                            type: string
+                            minLength: 1
+                      first:
+                        type: object
+                        required:
+                          - href
+                        properties:
+                          href:
+                            type: string
+                            minLength: 1
+                      last:
+                        type: object
+                        required:
+                          - href
+                        properties:
+                          href:
+                            type: string
+                            minLength: 1
+                      next:
+                        type: object
+                        required:
+                          - href
+                        properties:
+                          href:
+                            type: string
+                            minLength: 1
+                  _meta:
+                    type: object
+                    required:
+                      - totalCount
+                      - pageCount
+                      - currentPage
+                      - perPage
+                    properties:
+                      totalCount:
+                        type: integer
+                      pageCount:
+                        type: integer
+                      currentPage:
+                        type: integer
+                      perPage:
+                        type: integer
+                required:
+                  - items
+                  - _links
+                  - _meta
+              examples:
+                Example:
+                  value:
+                    items:
+                      - id: 0
+                        timestamp: string
+                        orderID: 0
+                        prolongationID: 0
+                        amount: string
+                        currency: string
+                        fileID: string
+                        exportID: 0
+                        isExported: 0
+                        file:
+                          id: string
+                          extension: string
+                          fileName: string
+                          relationModel: string
+                          relationID: 0
+                          isPublic: 0
+                          isDeleted: 0
+                          size: 0
+                          timestamp: string
+                        fileURL: string
+                    _links:
+                      self:
+                        href: string
+                      first:
+                        href: string
+                      last:
+                        href: string
+                      next:
+                        href: string
+                    _meta:
+                      totalCount: 0
+                      pageCount: 0
+                      currentPage: 0
+                      perPage: 0
+  '/external/invoices/{invoiceID}/mark':
     parameters:
       - schema:
           type: string
-        name: externalID
+        name: invoiceID
         in: path
         required: true
-  /smartcharginghours:
-    get:
-      summary: Get smart charging hours
-      tags:
-        - smartcharging
+    post:
+      summary: Mark invoice as processed
+      operationId: post-external-invoices-invoiceID-mark
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    hourFrom:
-                      type: integer
-                    hourTo:
-                      type: integer
-                    price:
-                      type: number
-      operationId: get-smartcharginghours
+                type: object
+                properties:
+                  success:
+                    type: boolean
+      tags:
+        - invoices
 components:
-  schemas:
-    Relation:
-      description: ''
-      type: object
-      x-examples:
-        example-1:
-          id: 1
-          ecedoUUID: 2eea09fd-5558-4b72-aef4-adba010ad981
-          type: 1
-          gender: m
-          firstName: Zain
-          middleName: 'NULL'
-          lastName: Bouziane
-          birthDate: '2001-04-25'
-          phoneNumber: '0618582503'
-          mobileNumber: '0618582503'
-          email: zain@codiq.nl
-          companyName: 'NULL'
-          companyCocNumber: 'NULL'
-          street: Sandelingstraat
-          houseNumber: 56
-          houseNumberAddition: 'NULL'
-          postalCode: 3073AS
-          city: Rotterdam
-          paymentMethod: AUTOMATICCOLLECTION
-          debtorName: Zain Bouziane
-          bankAccountType: Bank
-          bankAccountNumber: NL37RABO7123425928
-          mandateTimestamp: '2021-10-07 11:08:25'
-      title: Relation
-      x-tags:
-        - relations
-      properties:
-        id:
-          type: integer
-          minimum: 1
-        externalID:
-          type: string
-          minLength: 1
-          format: uuid
-        type:
-          type: number
-        gender:
-          type: string
-          minLength: 1
-          enum:
-            - m
-            - f
-        firstName:
-          type: string
-          minLength: 1
-        middleName:
-          type: string
-          minLength: 1
-        lastName:
-          type: string
-          minLength: 1
-        birthDate:
-          type: string
-          minLength: 1
-        phoneNumber:
-          type: string
-          minLength: 1
-        mobileNumber:
-          type: string
-          minLength: 1
-        email:
-          type: string
-          minLength: 1
-        companyName:
-          type: string
-          minLength: 1
-        companyCocNumber:
-          type: string
-          minLength: 1
-        street:
-          type: string
-          minLength: 1
-        houseNumber:
-          type: integer
-        houseNumberAddition:
-          type: string
-          minLength: 1
-        postalCode:
-          type: string
-          minLength: 1
-        city:
-          type: string
-          minLength: 1
-        paymentMethod:
-          type: string
-          minLength: 1
-        debtorName:
-          type: string
-          minLength: 1
-        bankAccountType:
-          type: string
-          minLength: 1
-          enum:
-            - IBAN
-        bankAccountNumber:
-          type: string
-          minLength: 1
-        mandateTimestamp:
-          type: string
-          minLength: 1
-          readOnly: true
-      required:
-        - id
-        - externalID
-        - type
-        - gender
-        - firstName
-        - middleName
-        - lastName
-        - birthDate
-        - phoneNumber
-        - mobileNumber
-        - email
-        - companyName
-        - companyCocNumber
-        - street
-        - houseNumber
-        - houseNumberAddition
-        - postalCode
-        - city
-        - paymentMethod
-        - debtorName
-        - bankAccountType
-        - bankAccountNumber
-        - mandateTimestamp
+  schemas: {}
   securitySchemes:
-    API Key:
-      name: X-Api-Key
+    APIKey:
+      name: x-api-key
       type: apiKey
       in: header
-tags:
-  - name: advancepayment
-  - name: customer
-  - name: invoices
-  - name: usage
 security:
-  - API Key - 1: []
+  - APIKey: []
